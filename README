@@ -1,0 +1,72 @@
+Tema 3
+Grigoras Adrian, 322 CC
+
+-------------------------------------------------------------
+
+Helpere
+- Am folosit scheletul din laboratorul 10 (buffer.c, requests.c si helpers.c) 
+pentru usurinta in compunerea mesajelor de get si post(am adaugat si optiunea de get_delete).
+- Am folosit parson pentru usurinta in crearea obiectelor json
+	- Am construit mesajele json pentru detaliile carti cu ajutorul bibliotecii
+
+Client.c
+
+- Am definit PORT si HOST pentru port si adresa ip
+- citesc de la tastatura pana se introduce exit(iese din bucla)
+- Am luat fiecare comanda in parte pentru a trimite comenzi catre server
+- "Register"
+	introduc username si parola
+	construiesc un json
+	si trimit un request de post pentru a inregistra in server un nou user
+	in caz de eroare (daca exista deja sau daca altcineva e deja logat), se afiseaza mesaj.
+
+- "Login"
+	introduc username si parola
+	creez obiectul json pentru a trimite request
+	daca user-ul exista in baza de date, atunci se va afisa mesaj si voi salva cookie id-ul
+	daca user-ul nu exista sau e deja logat cineva, trimit mesaj corespunzator
+
+- "Enter_library"
+	daca cookie e diferit de null inseamna ca sunt logat(altfel afisez mesaj)
+	compun mesajul cu cookie-ul sa dovedesc ca sunt logat
+	get_request pentru a primi acces in biblioteca
+	scot tokenul din mesajul de confirmare primit pentru a demonstra accesul
+	daca a functionat cererea, afisez mesaj si invers, la fel
+
+- "Get_books"
+	daca tokenul de acces e diferit de null, incep conexiunea
+	formez headerul de autorizate pentru mesajul de get
+	iau raspunsul si parsez json-ul pentru a scrie cartile din biblioteca
+	daca tokenul de acces e null, afisez mesaj
+
+- "Get_book"
+	daca tokenul de acces e diferit de null, incep conexiunea
+	scriu id-ul cartii pe care o vreau
+	formez headerul de autorizate pentru mesajul de get(adaug si id-ul)
+	formez url-ul cu id-ul cartii
+	formez mesajul pentru request si informatiile despre cartea ceruta le afisez
+	Daca cartea nu exista, afisez mesaj
+
+- "Add_book"
+	daca tokenul de acces e diferit de null, incep conexiunea
+	introduc informatiile unei carti
+	formez un mesaj json pentru a publica noua carte
+	pun headerul de autorizatie in mesajul de post_request
+	daca a fost adaugata cu succes, pun un mesaj corespunzator
+
+- "Delete_book"
+	daca tokenul de acces e diferit de null, incep conexiunea
+	introduc id-ul cartii pe care vreau sa o sterg.
+	Adaug headeru de autorizatie in mesajul de delete
+	trimit mesajul catre server
+	daca cartea exista, afisez "Book was removed", altfel afisez mesajul primit ca nu exista
+
+- "Logout"
+	daca sunt deja conectat, incep conexiunea
+	formez mesajul cu cookie-ul de logare pentru get_request
+	extrag din raspuns numarul primit pentru a vedea daca a fost cu succes
+	daca ne-am delogat cu succes, afisam mesaj
+	daca nu exista cookie-ul de conectare, afisez ca nu sunt logat
+
+- "Exit"
+	dau break din bucla si se termina programul
